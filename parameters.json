@@ -1,11 +1,11 @@
 {
     "version": 1,
     "info": {
-        "title": "Edge Detection",
-        "author": "Jan Jongboom",
-        "description": "Edge Detection for images",
-        "name": "Edge Detection",
-        "cppType": "sobel_edge_detection",
+        "title": "Pose estimation",
+        "author": "Daniel Situnayake",
+        "description": "Pose estimation for images",
+        "name": "Pose estimation",
+        "cppType": "pose_estimation",
         "preferConvolution": false,
         "visualization": "dimensionalityReduction",
         "experimental": false,
