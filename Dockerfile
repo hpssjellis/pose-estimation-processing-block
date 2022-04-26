@@ -9,6 +9,11 @@ RUN apt update && apt install -y ffmpeg libsm6 libxext6
 COPY requirements-blocks.txt ./
 RUN pip3 --no-cache-dir install -r requirements-blocks.txt
 
+# We may need a specific TensorFlow version depending on our architecture
+COPY install_tensorflow.sh ./install_tensorflow.sh
+RUN ./install_tensorflow.sh && \
+    rm install_tensorflow.sh
+
 COPY third_party /third_party
 COPY . ./
 
