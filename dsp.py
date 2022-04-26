@@ -109,6 +109,7 @@ def generate_features(implementation_version, draw_graphs, raw_data, axes, sampl
         'output_config': {
             # type can be 'flat', 'image' or 'spectrogram'
             'type': 'flat',
+            'shape': { 'width': len(keypoints_with_scores.flatten()) }
             # 'shape': {
             #     # shape should be { width, height, channels } for image, { width, height } for spectrogram
             #     'width': int(width),
