@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from matplotlib.collections import LineCollection
 import matplotlib.patches as patches
 
-def generate_features(implementation_version, draw_graphs, raw_data, axes, sampling_freq, high_threshold, low_threshold, gaussian_blur):
+def generate_features(implementation_version, draw_graphs, raw_data, axes, sampling_freq):
     # features is a 1D array, reshape so we have a matrix
     raw_data = raw_data.reshape(int(len(raw_data) / len(axes)), len(axes))
 
