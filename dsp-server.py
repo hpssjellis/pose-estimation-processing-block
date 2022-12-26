@@ -9,11 +9,13 @@ from urllib.parse import urlparse, parse_qs
 import traceback
 import logging
 import numpy as np
-from dsp import generate_features
+from dsp import generate_features, get_tflite_implementation
+
+with open('parameters.json', 'r') as f:
+    dsp_params = json.loads(f.read())
 
 def get_params(self):
-    with open('parameters.json', 'r') as f:
-        return json.loads(f.read())
+    return dsp_params
 
 def single_req(self, fn, body):
     if (not body['features'] or len(body['features']) == 0):
@@ -99,6 +101,29 @@ def batch_req(self, fn, body):
     self.end_headers()
     self.wfile.write(body.encode())
 
+def tflite_req(self, fn, body):
+    if (not 'params' in body):
+        raise ValueError('Missing "params" in body')
+    if (not 'sampling_freq' in body):
+        raise ValueError('Missing "sampling_freq" in body')
+
+    args = {
+        'axes': np.array(body['axes']),
+        'sampling_freq': body['sampling_freq'],
+        'implementation_version': body['implementation_version']
+    }
+
+    for param_key in body['params'].keys():
+        args[param_key] = body['params'][param_key]
+
+    tflite_byte_arr = fn(**args)
+
+    self.send_response(200)
+    self.send_header('Content-type', 'application/octet-stream')
+    self.send_header('Content-Disposition', 'attachment; filename="dsp.tflite"')
+    self.end_headers()
+    self.wfile.write(tflite_byte_arr)
+
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
@@ -138,6 +163,12 @@ class Handler(BaseHTTPRequestHandler):
                 post_body = self.rfile.read(content_len)
                 body = json.loads(post_body.decode('utf-8'))
                 batch_req(self, generate_features, body)
+
+            elif (url.path == '/tflite-impl'):
+                content_len = int(self.headers.get('Content-Length'))
+                post_body = self.rfile.read(content_len)
+                body = json.loads(post_body.decode('utf-8'))
+                tflite_req(self, get_tflite_implementation, body)
 
             else:
                 self.send_response(404)
