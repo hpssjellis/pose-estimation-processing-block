@@ -110,7 +110,8 @@ def tflite_req(self, fn, body):
     args = {
         'axes': np.array(body['axes']),
         'sampling_freq': body['sampling_freq'],
-        'implementation_version': body['implementation_version']
+        'implementation_version': body['implementation_version'],
+        'input_shape': body['input_shape']
     }
 
     for param_key in body['params'].keys():

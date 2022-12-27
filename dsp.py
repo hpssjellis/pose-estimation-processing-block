@@ -300,7 +300,7 @@ def draw_prediction_on_image(
   return image_from_plot
 
 # Get the corresponding TFLite model that maps to generate_features w/ the same parameters
-def get_tflite_implementation(implementation_version, axes, sampling_freq):
+def get_tflite_implementation(implementation_version, input_shape, axes, sampling_freq):
     # here we have a pretrained model, but you could use JAX to generate this
     with open(os.path.join(curr_dir, "model.tflite"), 'rb') as f:
         return f.read()
