@@ -1,22 +1,28 @@
 # syntax = docker/dockerfile:experimental
-FROM python:3.7.5-stretch
+FROM ubuntu:20.04
 
 WORKDIR /app
 
-RUN apt update && apt install -y ffmpeg libsm6 libxext6
+ARG DEBIAN_FRONTEND=noninteractive
 
-# Python dependencies
-COPY requirements-blocks.txt ./
-RUN pip3 --no-cache-dir install -r requirements-blocks.txt
+RUN apt update && apt install -y curl wget ffmpeg libsm6 libxext6 zlib1g-dev python3.8 libpython3.8 python3.8-distutils
+
+# Install pip
+RUN wget https://bootstrap.pypa.io/get-pip.py && \
+    python3.8 get-pip.py "pip==21.3.1"
 
 # We may need a specific TensorFlow version depending on our architecture
 COPY install_tensorflow.sh ./install_tensorflow.sh
 RUN ./install_tensorflow.sh && \
     rm install_tensorflow.sh
 
-COPY third_party /third_party
+# Other Python dependencies
+COPY requirements-blocks.txt ./
+RUN pip3.8 --no-cache-dir install -r requirements-blocks.txt
+
+# Rest of the app
 COPY . ./
 
-EXPOSE 4446
+EXPOSE 4449
 
-CMD python3 -u dsp-server.py
+CMD python3.8 -u dsp-server.py

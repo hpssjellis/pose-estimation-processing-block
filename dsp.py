@@ -22,6 +22,9 @@ def generate_features(implementation_version, draw_graphs, raw_data, axes, sampl
     height = raw_data[1]
     raw_data = np.array(raw_data[2:]).astype(dtype=np.uint32).view(dtype=np.uint8)
 
+    if width != 192 or height != 192:
+        raise Exception('Image width/height must be 192. Change this under **Create impulse**')
+
     pixels_per_frame = height * width * 4
     frame_count = 0
     expected_frame_count = len(raw_data) / pixels_per_frame
@@ -68,7 +71,6 @@ def generate_features(implementation_version, draw_graphs, raw_data, axes, sampl
             interpreter.invoke()
             # Get the model prediction.
             keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
-            print('keypoints_with_scores', keypoints_with_scores)
             return keypoints_with_scores
 
 
