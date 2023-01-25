@@ -1,5 +1,9 @@
 # syntax = docker/dockerfile:experimental
-FROM ubuntu:20.04
+## FROM ubuntu:20.04
+FROM gitpod/workspace-full:latest
+
+USER root
+
 
 WORKDIR /app
 
